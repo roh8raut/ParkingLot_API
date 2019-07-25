@@ -6,7 +6,7 @@ const slotsArray = [];
 let dataToReturn;
 
 // slots Array which will consist of slots
-for (let i = 1; i < 3; i++) {
+for (let i = 1; i < 21; i++) {
   slotsArray.push(i);
 }
 

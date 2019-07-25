@@ -3,7 +3,7 @@ import { getSlotNumber,getAllAvailableSlots, postDataToTable, upadteDataToTable,
 // import { getDataFromTable } from '../models/parkinglot.model';
 
 export const getDataFromService = async (req, res) => {
-     res.json(await getSlotNumber(req.params.regNum))
+     res.json(await getSlotNumber(req.query.regNum))
 }
 
 export const getAllSlots = async (req, res) => {

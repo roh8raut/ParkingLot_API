@@ -3,10 +3,10 @@ import { getDataFromService, getAllSlots, postDataToService, deleteDataFromServi
 
 const router = express.Router()
 
-router.route('/:regNum')
+router.route('/')
     .get(getDataFromService);
 
-router.route('/all/go')
+router.route('/availableSlots')
     .get(getAllSlots)
 
 router.route('/:regNum')
