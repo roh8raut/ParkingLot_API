@@ -16,7 +16,7 @@ mongoose.connect(url, {useNewUrlParser: true});
 export const getSlotNumber = async (regNum) => {
     await parkingLotData.findOne({},{"parkingDetails": {$elemMatch : {regNum: regNum }}})
           .then((data) => {
-              dataToReturn = (data && data.parkingDetails && data.parkingDetails.length > 0) ? {slotAlloted: data.parkingDetails[0].slotAlloted} : {"msg": "No Such Car is Parked :("};
+              dataToReturn = (data && data.parkingDetails && data.parkingDetails.length > 0) ? {"msg": "Your car is parked in slot: ",slotAlloted: data.parkingDetails[0].slotAlloted} : {"msg": "No Such Car is Parked :("};
             });
             return dataToReturn;
 }
@@ -31,10 +31,10 @@ export const getAllAvailableSlots = async () => {
   await parkingLotData.find({"parkingDetails": {$elemMatch: {"regNum": req.regNum}}})
                       .then(async (data) => {
                         if(data.length !== 0) {
-                          dataToReturn = {"msgTOUser": "We are sorry to inform that your entry already"}
+                          dataToReturn = {"msg": "We are sorry to inform that your entry already exists."}
                         } else {
                           let isSlotAlloted = await getAvailableSlot(req.regNum);
-                          dataToReturn =  isSlotAlloted ? {"slotAlloted": isSlotAlloted}:{"msg": "All slots are booked"}
+                          dataToReturn =  isSlotAlloted ? {"msg": "Your car is parked in slot: ","slotAlloted": isSlotAlloted}:{"msg": "All slots are booked"}
                         }
  
                       })
@@ -75,7 +75,7 @@ const addSlotToSlotArr = async (data) => {
   const amountToBePaid = calculateAmountToPaid(dataObj.bookingDate);
     await parkingLotData.update({},{$pull: {"parkingDetails": {regNum: dataObj.regNum}}})
         slotsArray.push(dataObj.slotAlloted);
-        return {"msg": "Deleted Succesfully","amountToBePaid":amountToBePaid};
+        return {"msg": "Your car is moved from parking space","amountToBePaid":`Amount to be paid ${amountToBePaid}₹`};
 }
 
 const calculateAmountToPaid = (bookingDate) => {

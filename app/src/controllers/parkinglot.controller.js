@@ -1,4 +1,4 @@
-import { getSlotNumber,getAllAvailableSlots, postDataToTable, upadteDataToTable, deleteDataFromTable } from '../services/parkinglot.services';
+import { getSlotNumber,getAllAvailableSlots, postDataToTable, deleteDataFromTable } from '../services/parkinglot.services';
 
 // import { getDataFromTable } from '../models/parkinglot.model';
 

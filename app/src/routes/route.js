@@ -15,7 +15,5 @@ router.route('/:regNum')
 router.route('/')
     .post(postDataToService);
 
-
- 
 export default router;router.route('/')
 .get(getDataFromService);
