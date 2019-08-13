@@ -74,8 +74,8 @@ const addSlotToSlotArr = async (data) => {
   const dataObj = {slotToBeAdded: data.parkingDetails[0].slotAlloted, bookingDate: data.parkingDetails[0].bookingDateAndTime, regNum: data.parkingDetails[0].regNum};
   const amountToBePaid = calculateAmountToPaid(dataObj.bookingDate);
     await parkingLotData.update({},{$pull: {"parkingDetails": {regNum: dataObj.regNum}}})
-        slotsArray.push(dataObj.slotAlloted);
-        return {"msg": "Your car is moved from parking space","amountToBePaid":`Amount to be paid ${amountToBePaid}₹`};
+        slotsArray.push(dataObj.slotToBeAdded);
+        return {"msg": "Your car is moved from parking space.","amountToBePaid":`Amount to be paid ${amountToBePaid}₹`};
 }
 
 const calculateAmountToPaid = (bookingDate) => {
