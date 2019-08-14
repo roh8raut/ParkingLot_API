@@ -16,7 +16,7 @@ mongoose.connect(url, {useNewUrlParser: true});
 export const getSlotNumber = async (regNum) => {
     await parkingLotData.findOne({},{"parkingDetails": {$elemMatch : {regNum: regNum }}})
           .then((data) => {
-              dataToReturn = (data && data.parkingDetails && data.parkingDetails.length > 0) ? {"msg": "Your car is parked in slot: ",slotAlloted: data.parkingDetails[0].slotAlloted} : {"msg": "No Such Car is Parked :("};
+              dataToReturn = (data && data.parkingDetails && data.parkingDetails.length > 0) ? {"msg": "Your car is parked in slot: ",slotAlloted: data.parkingDetails[0].slotAlloted} : {"msg": "No Car is Parked with that registration number:("};
             });
             return dataToReturn;
 }
@@ -53,7 +53,7 @@ export const deleteDataFromTable = async (regNum) => {
   
   await parkingLotData.findOne({},{"parkingDetails": {$elemMatch: {regNum: regNum}}})
           .then(async (data) => {
-              dataToReturn = (data && data.parkingDetails && data.parkingDetails.length > 0) ? addSlotToSlotArr(data) : {"msg": "No such User exists :("};
+              dataToReturn = (data && data.parkingDetails && data.parkingDetails.length > 0) ? addSlotToSlotArr(data) : {"msg": "No Car is Parked with that registration number:("};
           });
           return dataToReturn;
 }
