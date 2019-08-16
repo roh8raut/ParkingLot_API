@@ -1,4 +1,4 @@
-import { getSlotNumber,getAllAvailableSlots, postDataToTable, deleteDataFromTable } from '../services/parkinglot.services';
+import { getSlotNumber,getAllAvailableSlots, postDataToTable, deleteDataFromTable, parkedVehicles } from '../services/parkinglot.services';
 
 // import { getDataFromTable } from '../models/parkinglot.model';
 
@@ -14,9 +14,9 @@ export const postDataToService = async (req, res) => {
      res.json(await postDataToTable(req.body));
 }
 
-// export const updateDataToService = async (req, res) => {
-//      res.json(await upadteDataToTable());
-// }
+export const getParkedVehicles = async (req, res) => {
+     res.json(await parkedVehicles());
+}
 
 export const deleteDataFromService = async (req, res) => {
      res.json(await deleteDataFromTable(req.params.regNum))

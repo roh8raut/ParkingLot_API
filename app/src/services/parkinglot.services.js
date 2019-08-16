@@ -8,6 +8,18 @@ for (let i = 1; i < 21; i++) {
   slotsArray.push(i);
 }
 
+
+export const parkedVehicles = async regNum => {
+  await parkingLotData.distinct("parkingDetails.regNum")
+                      .then(data => {
+                        dataToReturn = {regNum: data}
+                      });
+        
+      return dataToReturn;
+}
+
+
+
 export const getSlotNumber = async regNum => {
   await parkingLotData
     .findOne({}, { parkingDetails: { $elemMatch: { regNum: regNum } } })

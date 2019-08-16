@@ -1,11 +1,14 @@
 import express from 'express';
-import { getDataFromService, getAllSlots, postDataToService, deleteDataFromService } from '../controllers/parkinglot.controller';
+import { getDataFromService, getAllSlots, getParkedVehicles, postDataToService, deleteDataFromService } from '../controllers/parkinglot.controller';
 
 const router = express.Router()
 
 router.route('/')
     .get(getDataFromService);
 
+router.route('/getParkedVehicles')
+        .get(getParkedVehicles);
+    
 router.route('/availableSlots')
     .get(getAllSlots)
 
