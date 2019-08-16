@@ -9,8 +9,8 @@ var cors = require('cors')
 // const url =  'mongodb://localhost:27017/parkinglot';
 
 const app = express();
-// const port = process.env.PORT || 5000;
-const port = 5000;
+const port = process.env.PORT || 5000;
+// const port = 5000;
 console.log("env>>", process.env.PORT);
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/parkinglot', {useNewUrlParser: true});
 
