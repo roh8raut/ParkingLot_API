@@ -24,6 +24,7 @@ export const getSlotNumber = async regNum => {
   await parkingLotData
     .findOne({}, { parkingDetails: { $elemMatch: { regNum: regNum } } })
     .then(data => {
+      console.log("d>>>>>", data);
       dataToReturn =
         data && data.parkingDetails && data.parkingDetails.length > 0
           ? {
@@ -40,11 +41,14 @@ export const getAllAvailableSlots = async () => {
     ? { slots: slotsArray }
     : { msg: "All Slots are booked" };
 };
+
+
 export const postDataToTable = async req => {
   // let ds = new parkingLotData({})
   await parkingLotData
     .find({ parkingDetails: { $elemMatch: { regNum: req.regNum } } })
     .then(async data => {
+      console.log("data",data);
       if (data.length !== 0) {
         dataToReturn = {
           msg: "We are sorry to inform that your entry already exists."

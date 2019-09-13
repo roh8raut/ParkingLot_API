@@ -1,17 +1,16 @@
 import mongoose from 'mongoose';
 
-let parkingLotData = mongoose.Schema({
+let parkingLotData = new mongoose.Schema({
     
         "totalParkingSlots": Number,
         "parkingDetails":[  
            {  
-              "regNum": {type: String, unique: true},
+              "regNum": String,
               "slotAlloted": Number,
               "bookingDateAndTime": Date
            }
         ]
-}
-    );
+});
 
 
 
