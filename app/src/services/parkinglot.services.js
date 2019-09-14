@@ -2,23 +2,20 @@ import parkingLotData from "../models/parkinglot.model";
 
 const slotsArray = [];
 let dataToReturn;
+let initialSetup = true;
 
 // slots Array which will consist of slots
 for (let i = 1; i < 21; i++) {
   slotsArray.push(i);
 }
 
-
 export const parkedVehicles = async regNum => {
-  await parkingLotData.distinct("parkingDetails.regNum")
-                      .then(data => {
-                        dataToReturn = {regNum: data}
-                      });
-        
-      return dataToReturn;
-}
+  await parkingLotData.distinct("parkingDetails.regNum").then(data => {
+    dataToReturn = { regNum: data };
+  });
 
-
+  return dataToReturn;
+};
 
 export const getSlotNumber = async regNum => {
   await parkingLotData
@@ -42,13 +39,12 @@ export const getAllAvailableSlots = async () => {
     : { msg: "All Slots are booked" };
 };
 
-
 export const postDataToTable = async req => {
   // let ds = new parkingLotData({})
   await parkingLotData
     .find({ parkingDetails: { $elemMatch: { regNum: req.regNum } } })
     .then(async data => {
-      console.log("data",data);
+      console.log("data", data);
       if (data.length !== 0) {
         dataToReturn = {
           msg: "We are sorry to inform that your entry already exists."
@@ -60,7 +56,7 @@ export const postDataToTable = async req => {
           : { msg: "All slots are booked" };
       }
     })
-    .catch((err) => console.log(err));
+    .catch(err => console.log(err));
   return dataToReturn;
 };
 
@@ -89,16 +85,39 @@ export const deleteDataFromTable = async regNum => {
 const getAvailableSlot = async regNum => {
   if (slotsArray.length > 0) {
     let slotAlloted = parseInt(slotsArray.splice(0, 1));
-    await parkingLotData.findOneAndUpdate({
-      $push: {
-        parkingDetails: {
-          regNum: regNum,
-          slotAlloted: slotAlloted,
-          bookingDateAndTime: new Date()
+    if (initialSetup) {
+      initialSetup = false;
+      let details = new parkingLotData({
+        totalParkingSlots: 20,
+        parkingDetails: [
+          {
+            regNum: regNum,
+            slotAlloted: slotAlloted,
+            bookingDateAndTime: new Date()
+          }
+        ]
+      });
+      await details.save(error => {
+        if (error) {
+          console.log(error);
+          return "";
+        } else {
+          console.log("Your bee has been saved!");
         }
-      }
-    });
-    return slotAlloted;
+      });
+      return slotAlloted;
+    } else {
+      await parkingLotData.findOneAndUpdate({
+        $push: {
+          parkingDetails: {
+            regNum: regNum,
+            slotAlloted: slotAlloted,
+            bookingDateAndTime: new Date()
+          }
+        }
+      });
+      return slotAlloted;
+    }
   } else {
     return "";
   }
