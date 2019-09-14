@@ -6,8 +6,8 @@ import mongoose from 'mongoose';
 require('dotenv').config();
 var cors = require('cors')
 
-// const url =  'mongodb://localhost:27017/parkinglot';
-const url = 'mongodb://parkinglot:rohit6@ds129394.mlab.com:29394/heroku_frwqjj8g';
+const url =  'mongodb://localhost:27017/PLD';
+// const url = 'mongodb://parkinglot:rohit6@ds129394.mlab.com:29394/heroku_frwqjj8g';
 
 const app = express();
 const port = process.env.PORT || 5000;

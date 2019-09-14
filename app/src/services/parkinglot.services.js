@@ -59,7 +59,8 @@ export const postDataToTable = async req => {
           ? { msg: "Your car is parked in slot: ", slotAlloted: isSlotAlloted }
           : { msg: "All slots are booked" };
       }
-    });
+    })
+    .catch((err) => console.log(err));
   return dataToReturn;
 };
 
