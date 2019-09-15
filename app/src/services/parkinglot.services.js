@@ -19,16 +19,12 @@ export const parkedVehicles = async regNum => {
 
 export const getSlotNumber = async regNum => {
   await parkingLotData
-    .findOne({}, { parkingDetails: { $elemMatch: { regNum: regNum } } })
+    .find({}, { parkingDetails: { $elemMatch: { regNum: regNum } } })
     .then(data => {
-      console.log("d>>>>>", data);
-      dataToReturn =
-        data && data.parkingDetails && data.parkingDetails.length > 0
-          ? {
-              msg: "Your car is parked in slot: ",
-              slotAlloted: data.parkingDetails[0].slotAlloted
-            }
-          : { msg: "No Car is Parked with that registration number:(" };
+      const dataObj = data.find((details) => {
+        return details.parkingDetails && details.parkingDetails.length > 0;
+      })
+      dataToReturn = dataObj ? { msg: "Your car is parked in slot: ", slotAlloted: dataObj.parkingDetails[0].slotAlloted} : { msg: "No Car is Parked with that registration number:(" };
     });
   return dataToReturn;
 };
@@ -70,11 +66,14 @@ export const postDataToTable = async req => {
 
 export const deleteDataFromTable = async regNum => {
   await parkingLotData
-    .findOne({}, { parkingDetails: { $elemMatch: { regNum: regNum } } })
+    .find({}, { parkingDetails: { $elemMatch: { regNum: regNum } } })
     .then(async data => {
+      const dataObj = data.find((details) => {
+        return details.parkingDetails && details.parkingDetails.length > 0;
+      })
       dataToReturn =
-        data && data.parkingDetails && data.parkingDetails.length > 0
-          ? addSlotToSlotArr(data)
+        dataObj
+          ? addSlotToSlotArr(dataObj)
           : { msg: "No Car is Parked with that registration number:(" };
     });
   return dataToReturn;

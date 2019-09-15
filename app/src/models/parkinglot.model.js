@@ -12,7 +12,7 @@ let parkingLotData = new mongoose.Schema({
         ],
 });
 
-parkingLotData.set('autoIndex', false);
+// parkingLotData.set('autoIndex', false);
 
 // parkinglotdatas
 
