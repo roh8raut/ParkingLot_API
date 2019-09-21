@@ -2,26 +2,26 @@ import parkingLotData from "../models/parkinglot.model";
 
 let slotsArray = [];
 let dataToReturn;
-let initialSetup = true;
-let firstTime = true;
+let parkingFirstTime = true;
+let slotsFirstTime = true;
 
 // Initialize slots array
 
 export const updateSlotsArray = async () => {
-  if(firstTime) {
-    firstTime = false;
+  if(slotsFirstTime) {
+    slotsFirstTime = false;
     for(let i = 1; i < 21; i++) {
       slotsArray.push(i);
     }
     let db = new parkingLotData({
       Slots: slotsArray,
-      parkingDetails: [
-        {
-          regNum: 0,
-          slotAlloted: 0,
-          bookingDateAndTime: new Date()
-        }
-      ]
+      // parkingDetails: [
+      //   {
+      //     regNum: 0,
+      //     slotAlloted: 0,
+      //     bookingDateAndTime: new Date()
+      //   }
+      // ]
       })
       await db.save(error => {
         if (error) {
@@ -114,17 +114,14 @@ export const deleteDataFromTable = async regNum => {
 const getAvailableSlot = async regNum => {
   if (slotsArray.length > 0) {
     let slotAlloted = parseInt(slotsArray.splice(0, 1));
-    // console.log("slotAlloted?>>", slotsArray, slotAlloted);
     await parkingLotData
       .update({}, { $pull: { Slots: slotAlloted } })
       .then(async data => {
-        // console.log("pulled data", data);
         await updateSlotsArray();
       });
-    // if (initialSetup) {
-    //   initialSetup = false;
+    // if (parkingFirstTime) {
+    //   parkingFirstTime = false;
     //   let details = new parkingLotData({
-    //     totalParkingSlots: 20,
     //     parkingDetails: [
     //       {
     //         regNum: regNum,
