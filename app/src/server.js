@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import router from './routes/route';
 import mongoose from 'mongoose';
+import { updateSlotsArray } from './services/parkinglot.services';
 
 require('dotenv').config();
 var cors = require('cors')
@@ -18,32 +19,18 @@ mongoose.connect(process.env.MONGODB_URI || url,{ useNewUrlParser: true })
 .then(() => console.log('MongoDB Connected'))
 .catch(err => console.log(err));
 
-// var connection = mongoose.connection;
-
-// connection.on('error', console.error.bind(console, 'connection error:'));
-// connection.once('open', function () {
-
-//     connection.db.collection("parkinglotdata", function(err, collection){
-//         collection.find({}).toArray(function(err, data){
-//             console.log(data); // it will print your collection data
-//         })
-//     });
-// });
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json());
 
- mongoose.Promise = global.Promise;
-
-// app.get('/', (req, res) => {
-//     res.json({"message": "Welcome to EasyNotes application. Take notes quickly. Organize and keep track of all your notes."});
-// });
+mongoose.Promise = global.Promise;
 
 
 app.use('/', router);
 
 app.listen(port, () => {
+    updateSlotsArray();
     console.log("server is running..,");
 });
