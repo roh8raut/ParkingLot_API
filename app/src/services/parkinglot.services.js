@@ -13,11 +13,16 @@ export const updateSlotsArray = async () => {
       slotsArray.push(i);
     }
 
-    await parkingLotData
-      .update({}, { $push: { Slots: slotsArray } })
-      .then(data => {
-        // console.log(data);
-      });
+    let db = new parkingLotData({
+      Slots: slotsArray, 
+    });
+
+    await db.save(error => {
+      if (error) {
+        console.log(error);
+        return "";
+      }
+    });
   } else {
     await parkingLotData.distinct("Slots").then(data => {
       if (data && data.length > 0) {
