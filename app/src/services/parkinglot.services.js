@@ -2,44 +2,30 @@ import parkingLotData from "../models/parkinglot.model";
 
 let slotsArray = [];
 let dataToReturn;
-let parkingFirstTime = true;
-let slotsFirstTime = true;
+let initialSlotsSetup = true;
 
 // Initialize slots array
 
 export const updateSlotsArray = async () => {
-  if(slotsFirstTime) {
-    slotsFirstTime = false;
-    for(let i = 1; i < 21; i++) {
+  if (initialSlotsSetup) {
+    initialSlotsSetup = false;
+    for (let i = 1; i < 21; i++) {
       slotsArray.push(i);
     }
-    let db = new parkingLotData({
-      Slots: slotsArray,
-      // parkingDetails: [
-      //   {
-      //     regNum: 0,
-      //     slotAlloted: 0,
-      //     bookingDateAndTime: new Date()
-      //   }
-      // ]
-      })
-      await db.save(error => {
-        if (error) {
-          console.log(error);
-          return "";
-        }
+
+    await parkingLotData
+      .update({}, { $push: { Slots: slotsArray } })
+      .then(data => {
+        // console.log(data);
       });
   } else {
     await parkingLotData.distinct("Slots").then(data => {
-      console.log("returnedd Slots>>",data)
-      if(data && data.length > 0) {
+      if (data && data.length > 0) {
         slotsArray = data;
-        }
+      }
     });
   }
-  console.log("SlotsAr>>", slotsArray);
-}
- 
+};
 
 export const parkedVehicles = async regNum => {
   await parkingLotData.distinct("parkingDetails.regNum").then(data => {
@@ -75,6 +61,9 @@ export const getAllAvailableSlots = async () => {
 
 export const postDataToTable = async req => {
   // let ds = new parkingLotData({})
+  if (initialSlotsSetup) { 
+    updateSlotsArray();
+  }
   await parkingLotData
     .find({ parkingDetails: { $elemMatch: { regNum: req.regNum } } })
     .then(async data => {
@@ -93,12 +82,10 @@ export const postDataToTable = async req => {
   return dataToReturn;
 };
 
-
 export const deleteDataFromTable = async regNum => {
   await parkingLotData
     .find({}, { parkingDetails: { $elemMatch: { regNum: regNum } } })
     .then(async data => {
-      console.log("data",data)
       const dataObj = data.find(details => {
         return details.parkingDetails && details.parkingDetails.length > 0;
       });
@@ -117,37 +104,18 @@ const getAvailableSlot = async regNum => {
     await parkingLotData
       .update({}, { $pull: { Slots: slotAlloted } })
       .then(async data => {
-        await updateSlotsArray();
+        // await updateSlotsArray();
       });
-    // if (parkingFirstTime) {
-    //   parkingFirstTime = false;
-    //   let details = new parkingLotData({
-    //     parkingDetails: [
-    //       {
-    //         regNum: regNum,
-    //         slotAlloted: slotAlloted,
-    //         bookingDateAndTime: new Date()
-    //       }
-    //     ]
-    //   });
-    //   await details.save(error => {
-    //     if (error) {
-    //       console.log(error);
-    //       return "";
-    //     }
-    //   });
-    //   return slotAlloted;
-    // } else {
-      await parkingLotData.findOneAndUpdate({
-        $push: {
-          parkingDetails: {
-            regNum: regNum,
-            slotAlloted: slotAlloted,
-            bookingDateAndTime: new Date()
-          }
+    await parkingLotData.findOneAndUpdate({
+      $push: {
+        parkingDetails: {
+          regNum: regNum,
+          slotAlloted: slotAlloted,
+          bookingDateAndTime: new Date()
         }
-      });
-      return slotAlloted;
+      }
+    });
+    return slotAlloted;
     // }
   } else {
     return "";
@@ -166,11 +134,10 @@ const addSlotToSlotArr = async data => {
     { $pull: { parkingDetails: { regNum: dataObj.regNum } } }
   );
   // slotsArray.push(dataObj.slotToBeAdded);
-  console.log(" dataObj.slotToBeAdded>>", dataObj.slotToBeAdded);
   await parkingLotData
     .update({}, { $push: { Slots: dataObj.slotToBeAdded } })
     .then(async () => {
-      await updateSlotsArray();
+      // await updateSlotsArray();
     });
 
   return {
