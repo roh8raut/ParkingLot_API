@@ -2,7 +2,6 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import router from './routes/route';
 import mongoose from 'mongoose';
-import { updateSlotsArray } from './services/parkinglot.services';
 
 require('dotenv').config();
 var cors = require('cors')
@@ -31,6 +30,5 @@ mongoose.Promise = global.Promise;
 app.use('/', router);
 
 app.listen(port, () => {
-    updateSlotsArray();
     console.log("server is running..,");
 });
