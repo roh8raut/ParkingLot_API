@@ -7,7 +7,6 @@ let initialSlotsSetup = true;
 // Initialize slots array
 
 export const updateSlotsArray = async () => {
-  console.log("running updateslotsArr>>");
   if (initialSlotsSetup) {
     initialSlotsSetup = false;
     for (let i = 1; i < 21; i++) {
@@ -17,7 +16,7 @@ export const updateSlotsArray = async () => {
     await parkingLotData
       .update({}, { $push: { Slots: slotsArray } })
       .then(data => {
-        console.log(data);
+        // console.log(data);
       });
   } else {
     await parkingLotData.distinct("Slots").then(data => {
@@ -87,7 +86,6 @@ export const deleteDataFromTable = async regNum => {
   await parkingLotData
     .find({}, { parkingDetails: { $elemMatch: { regNum: regNum } } })
     .then(async data => {
-      console.log("data", data);
       const dataObj = data.find(details => {
         return details.parkingDetails && details.parkingDetails.length > 0;
       });
@@ -136,7 +134,6 @@ const addSlotToSlotArr = async data => {
     { $pull: { parkingDetails: { regNum: dataObj.regNum } } }
   );
   // slotsArray.push(dataObj.slotToBeAdded);
-  console.log(" dataObj.slotToBeAdded>>", dataObj.slotToBeAdded);
   await parkingLotData
     .update({}, { $push: { Slots: dataObj.slotToBeAdded } })
     .then(async () => {
