@@ -14,4 +14,4 @@ let parkingLotData = new mongoose.Schema({
 
 // parkingLotData.set('autoIndex', false);
 
-module.exports =  mongoose.model("parkingLotData", parkingLotData);
+module.exports =  mongoose.model("PLDATAS", parkingLotData);

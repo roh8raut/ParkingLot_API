@@ -7,30 +7,54 @@ let initialSlotsSetup = true;
 // Initialize slots array
 
 export const updateSlotsArray = async () => {
-  if (initialSlotsSetup) {
-    initialSlotsSetup = false;
-    for (let i = 1; i < 21; i++) {
-      slotsArray.push(i);
+
+  await parkingLotData.find().then( async data => {
+    if (data && data[0] && data[0].Slots && data[0].Slots.length > 0) {
+      slotsArray = data[0].Slots;      
+    } else {
+      for (let i = 1; i < 21; i++) {
+            slotsArray.push(i);
+          }
+      
+          let db = new parkingLotData({
+            Slots: slotsArray, 
+          });
+      
+          await db.save(error => {
+            if (error) {
+              console.log(error);
+              return "";
+            }
+          });
     }
+  })
+}
 
-    let db = new parkingLotData({
-      Slots: slotsArray, 
-    });
 
-    await db.save(error => {
-      if (error) {
-        console.log(error);
-        return "";
-      }
-    });
-  } else {
-    await parkingLotData.distinct("Slots").then(data => {
-      if (data && data.length > 0) {
-        slotsArray = data;
-      }
-    });
-  }
-};
+  // if (initialSlotsSetup) {
+  //   initialSlotsSetup = false;
+  //   for (let i = 1; i < 21; i++) {
+  //     slotsArray.push(i);
+  //   }
+
+  //   let db = new parkingLotData({
+  //     Slots: slotsArray, 
+  //   });
+
+  //   await db.save(error => {
+  //     if (error) {
+  //       console.log(error);
+  //       return "";
+  //     }
+  //   });
+  // } else {
+  //   await parkingLotData.distinct("Slots").then(data => {
+  //     if (data && data.length > 0) {
+  //       slotsArray = data;
+  //     }
+  //   });
+  // }
+
 
 export const parkedVehicles = async regNum => {
   await parkingLotData.distinct("parkingDetails.regNum").then(data => {
@@ -66,9 +90,10 @@ export const getAllAvailableSlots = async () => {
 
 export const postDataToTable = async req => {
   // let ds = new parkingLotData({})
-  if (initialSlotsSetup) { 
+  // if (initialSlotsSetup) { 
     updateSlotsArray();
-  }
+  // }
+
   await parkingLotData
     .find({ parkingDetails: { $elemMatch: { regNum: req.regNum } } })
     .then(async data => {
@@ -109,7 +134,7 @@ const getAvailableSlot = async regNum => {
     await parkingLotData
       .update({}, { $pull: { Slots: slotAlloted } })
       .then(async data => {
-        // await updateSlotsArray();
+        await updateSlotsArray();
       });
     await parkingLotData.findOneAndUpdate({
       $push: {
@@ -142,7 +167,7 @@ const addSlotToSlotArr = async data => {
   await parkingLotData
     .update({}, { $push: { Slots: dataObj.slotToBeAdded } })
     .then(async () => {
-      // await updateSlotsArray();
+      await updateSlotsArray();
     });
 
   return {
